@@ -1,0 +1,28 @@
+/* Estilos globales para la aplicación */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: #f8f9fa;
+}
+
+/* Contenedor principal para alinear el sidebar y el contenido */
+.app-container {
+  display: flex;
+  min-height: 100vh; /* Ocupa toda la altura de la pantalla */
+}
+
+/* Estilos para el componente <app-sidevar> */
+app-sidevar {
+  display: block;
+  width: 250px; /* Ancho fijo del sidebar */
+  background-color: #ffffff;
+  border-right: 1px solid #ecf0f1;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+}
+
+/* Estilos para el componente <app-inicio> */
+app-inicio {
+  display: block;
+  flex-grow: 1; /* Permite que ocupe el espacio restante */
+  padding: 30px; /* Espaciado interno para el contenido */
+}

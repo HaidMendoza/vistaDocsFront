@@ -1,0 +1,52 @@
+<!-- Este formulario ahora está vinculado al `loginForm` del componente TypeScript -->
+<div class="login-container">
+    <div class="left-panel">
+        <img src="https://wallpapers.com/images/hd/architecture-background-h6zxfcid60g48q8n.jpg" alt="Building Blueprint" class="building-image">
+    </div>
+    <div class="right-panel">
+        <div class="logo">
+            <!-- Usando la ruta de assets que proporcionaste -->
+            <img src="assets/vistadoc-logo.png" alt="VistaDoc Logo">
+        </div>
+        <div class="welcome-text">
+            <h2>Bienvenido</h2>
+            <p>Inicia sesión aquí</p>
+        </div>
+        
+        <!-- Se ha agregado el formGroup y el evento ngSubmit para conectar con el componente -->
+        <form [formGroup]="loginForm" (ngSubmit)="iniciarSesion()">
+            <!-- Campo para el Correo electrónico -->
+            <div class="form-group">
+                <!-- Se ha agregado formControlName para vincular este campo al formulario reactivo -->
+                <input type="email" placeholder="Correo electrónico" formControlName="email">
+                <!-- Se han añadido mensajes de error para la validación -->
+                <div *ngIf="loginForm.get('email')?.invalid && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)" class="error-message">
+                    Ingresa un correo electrónico válido.
+                </div>
+            </div>
+            
+            <!-- Campo para la Contraseña -->
+            <div class="form-group">
+                <!-- Se ha agregado formControlName para vincular este campo al formulario reactivo -->
+                <input type="password" placeholder="Contraseña" formControlName="password">
+                <!-- Se han añadido mensajes de error para la validación -->
+                <div *ngIf="loginForm.get('password')?.invalid && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched)" class="error-message">
+                    La contraseña es obligatoria.
+                </div>
+            </div>
+            
+            <div class="checkbox-group">
+                <div class="remember-me">
+                    <input type="checkbox" id="remember">
+                    <label for="remember">Recuérdame</label>
+                </div>
+                <!-- El enlace de 'Olvidaste tu contraseña' se mantiene sin cambios -->
+                <a class="forgot-password">¿Olvidaste tu contraseña?</a>
+            </div>
+            
+            <!-- Se ha cambiado el tipo a 'submit' y se ha agregado la lógica para deshabilitar el botón si el formulario es inválido -->
+            <!-- El routerLink se ha eliminado, ya que la redirección se maneja en el componente al iniciar sesión -->
+            <button type="submit" class="login-button" [disabled]="loginForm.invalid">Iniciar</button>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,110 @@
+<div class="plantas-container">
+    <!-- Sección superior que NO se elimina -->
+    <div class="right-section">
+        <h2 class="title">Plantas</h2>
+        <div class="search-container">
+            <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" placeholder="Search for something" class="search-input">
+        </div>
+
+        <div class="header-icons">
+            <button class="icon-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 0 1 1.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.559.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.894.149c-.424.07-.764.383-.929.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 0 1-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.398.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 0 1-.12-1.45l.527-.737c.25-.35.272-.806.108-1.204-.165-.397-.506-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.108-1.204l-.526-.738a1.125 1.125 0 0 1 .12-1.45l.773-.773a1.125 1.125 0 0 1 1.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894Z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                </svg>
+            </button>
+
+            <button class="icon-btn notification-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+                <span class="notification-badge"></span>
+            </button>
+
+            <div class="profile-container">
+                <img
+                    src=""
+                    alt="Profile" class="profile-image">
+            </div>
+        </div>
+    </div>
+
+    <!-- Nombre hotel y planta -->
+    <p class="subtitle">Wildstone Infra Hotel - Planta 1</p>
+
+    <!-- Botones de planta -->
+    <div class="buttons-container">
+        <button class="btn planta-inferior">Planta Inferior ▼</button>
+        <button class="btn planta-superior">Planta Superior ▲</button>
+    </div>
+
+    <!-- Caja central con el formulario integrado -->
+    <form [formGroup]="plantaForm" (ngSubmit)="crearPlanta()" class="upload-box">
+        <!-- Campos de entrada para crear una planta -->
+        <div class="form-fields">
+            <div class="form-group">
+                <label for="name">Nombre de la Planta</label>
+                <input id="name" type="text" formControlName="name" placeholder="Ej: Planta Baja">
+                <div *ngIf="plantaForm.get('name')?.invalid && plantaForm.get('name')?.touched" class="error-message">
+                    El nombre es obligatorio.
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="level">Nivel</label>
+                <input id="level" type="number" formControlName="level" placeholder="Ej: 1">
+                <div *ngIf="plantaForm.get('level')?.invalid && plantaForm.get('level')?.touched" class="error-message">
+                    El nivel debe ser un número válido.
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="projectId">ID del Proyecto</label>
+                <input id="projectId" type="number" formControlName="projectId" placeholder="Ej: 123">
+                <div *ngIf="plantaForm.get('projectId')?.invalid && plantaForm.get('projectId')?.touched" class="error-message">
+                    El ID del proyecto es obligatorio y debe ser un número.
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="!imagenPrevisualizada" class="upload-area">
+            <div class="icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="70" height="70" fill="none" stroke="#4F46E5" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M2 22h20M4 22V10h4v12M10 22V4h8v18M2 10h20M14 4V2h4v2" />
+                </svg>
+            </div>
+            <h3 class="upload-title">Aún no se ha cargado el plano de esta planta</h3>
+            <p class="upload-text">
+                Por favor, sube el plano arquitectónico correspondiente para activar la visualización de casillas interactivas.
+                Esto permitirá asignar y gestionar documentos por unidad
+            </p>
+            <input type="file" id="fileInput" (change)="onFileSelected($event)" accept="image/*" hidden>
+            <label for="fileInput" class="btn upload-btn">Subir Plano ⬆</label>
+        </div>
+
+        <!-- Vista previa de la imagen -->
+        <div *ngIf="imagenPrevisualizada" class="preview-container full-preview">
+            <!-- Se agregó el manejador de errores 'onerror' para evitar que se muestre el icono de imagen rota si la URL no es válida.
+                 Esto es un parche, el problema real está en el archivo .ts donde se asigna el valor a `imagenPrevisualizada`.
+                 Debes asegurarte de que `imagenPrevisualizada` sea una URL válida o un string Base64. -->
+            <img [src]="imagenPrevisualizada" alt="Plano" class="preview-image" onerror="this.style.display='none'">
+            <button type="button" class="btn upload-btn" (click)="detectarUnidadesEnPlano(plantaForm.get('projectId')?.value)">Detectar Unidades</button>
+        </div>
+
+        <!-- Botón de envío que crea la planta -->
+        <button type="submit" class="btn submit-btn" [disabled]="plantaForm.invalid">
+            Crear Planta
+        </button>
+    </form>
+</div>
+
+@if (false) {
+    <app-modal-editar-unidad></app-modal-editar-unidad>
+}

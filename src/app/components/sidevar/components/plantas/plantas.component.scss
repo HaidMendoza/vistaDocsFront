@@ -1,0 +1,210 @@
+$primary-blue: #4285F4;
+$light-blue: #1E90FF;
+$text-medium: #6B7280;
+$white: #FFFFFF;
+$red-notification: #EF4444;
+$bg-light: #f9fafb;
+$gray-light: #f3f4f6;
+
+.plantas-container {
+  font-family: 'Inter', sans-serif;
+  padding: 20px;
+  color: #1f2937;
+  background-color: $bg-light;
+  min-height: 100vh;
+
+  .right-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    height: 100px;
+    background-color: #FFFFFF;
+    border-radius: 15px;
+   
+
+    .search-container {
+     position: relative;
+  display: flex;
+  align-items: center;
+  background-color: #F3F4F6;
+  border-radius: 24px;
+  padding: 8px 16px;
+  width: 320px;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+
+  margin-left: auto; // Esto empuja el buscador a la derecha
+
+      &:focus-within {
+        border-color: $primary-blue;
+        box-shadow: 0 2px 6px rgba(66,133,244,0.2);
+      }
+
+      .search-icon {
+        color: $text-medium;
+        margin-right: 8px;
+      }
+
+      .search-input {
+        border: none;
+        outline: none;
+        font-size: 14px;
+        color: #374151;
+        background: transparent;
+        width: 200px;
+
+        &::placeholder {
+          color: $text-medium;
+        }
+      }
+    }
+
+    .header-icons {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+
+      .icon-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        background: transparent;
+        border: none;
+        border-radius: 50%;
+        color: $text-medium;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        position: relative;
+
+        &:hover {
+          background-color: $gray-light;
+          color: $primary-blue;
+          transform: scale(1.05);
+        }
+
+        &.notification-btn .notification-badge {
+          position: absolute;
+          top: 8px;
+          right: 8px;
+          width: 8px;
+          height: 8px;
+          background-color: $red-notification;
+          border-radius: 50%;
+          border: 2px solid $white;
+        }
+      }
+
+      .profile-container {
+        .profile-image {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          object-fit: cover;
+          border: 2px solid $primary-blue;
+          cursor: pointer;
+          transition: all 0.25s ease;
+
+          &:hover {
+            transform: scale(1.08);
+            border-color: $light-blue;
+          }
+        }
+      }
+    }
+  }
+
+  .title {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+
+  .subtitle {
+    font-size: 15px;
+    color: $text-medium;
+    margin-bottom: 20px;
+  }
+
+  .buttons-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+
+    .btn {
+      border: none;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 500;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.3s ease;
+
+      &.planta-inferior {
+        background-color: #f43f5e;
+        color: white;
+      }
+
+      &.planta-superior {
+        background-color: $primary-blue;
+        color: white;
+      }
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+      }
+    }
+  }
+
+  .upload-box {
+    background-color: $white;
+    padding: 40px 20px;
+    border-radius: 12px;
+    text-align: center;
+    max-width: 650px;
+    margin: 0 auto;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+
+    .icon {
+      margin-bottom: 20px;
+
+      svg {
+        display: inline-block;
+      }
+    }
+
+    .upload-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .upload-text {
+      font-size: 14px;
+      color: $text-medium;
+      margin-bottom: 25px;
+      line-height: 1.5;
+    }
+
+    .upload-btn {
+      background-color: #fbbf24;
+      color: white;
+      font-weight: 500;
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background-color: #f59e0b;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      }
+    }
+  }
+}
+

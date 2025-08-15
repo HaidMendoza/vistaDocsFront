@@ -1,0 +1,32 @@
+{
+  "proyectos": [
+    {
+      "id": 1,
+      "imagen": "fachada1.jpg",
+      "nombre": "Wildstone Infra Hotel",
+      "descripcion": "Descripción del proyecto 1...",
+      "direccion": "2715 Ash Dr, San Jose, South Dakota"
+    },
+    {
+      "id": 2,
+      "imagen": "fachada2.jpg",
+      "nombre": "Wish Stone Building",
+      "descripcion": "Descripción del proyecto 2...",
+      "direccion": "2972 Westheimer Rd, Santa Ana, Illinois"
+    },
+    {
+      "id": "3480",
+      "nombre": "knd k vdk vdv",
+      "direccion": "dbfdnffl fv vif",
+      "descripcion": "fvsknv riov i f ",
+      "imagen": "Porshe 911.jpeg"
+    },
+    {
+      "id": "81ec",
+      "nombre": "b j uvivbilbi",
+      "direccion": "jbih lih vilv",
+      "descripcion": "uvucvuvkvlk ",
+      "imagen": "WhatsApp Image 2025-05-06 at 9.51.42 PM.jpeg"
+    }
+  ]
+}

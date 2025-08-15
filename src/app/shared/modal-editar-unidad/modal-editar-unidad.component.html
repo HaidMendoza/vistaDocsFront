@@ -1,0 +1,45 @@
+<div class="modal-overlay">
+        <div class="modal">
+            <div class="modal-content">
+                <h2 class="modal-title">Editar Unidad</h2>
+                
+                <div class="form-group">
+                    <label class="form-label" for="numeracion">Numeración</label>
+                    <input 
+                        type="text" 
+                        id="numeracion" 
+                        class="form-input" 
+                        value="225"
+                        placeholder="Ingrese la numeración"
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Documentación</label>
+                    <div class="file-drop-zone" id="fileDropZone">
+                        <input 
+                            type="file" 
+                            id="fileInput" 
+                            class="hidden-file-input"
+                            accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                            multiple
+                        >
+                        <div class="file-drop-text">
+                            Arrastra y suelta los archivos aquí, o 
+                            <span class="file-drop-link">selecciona</span>
+                        </div>
+                    </div>
+                    <div id="selectedFiles"></div>
+                </div>
+                
+                <div class="modal-actions">
+                    <button class="btn btn-secondary" onclick="closeModal()">
+                        Cancelar
+                    </button>
+                    <button class="btn btn-primary" onclick="saveData()">
+                        Guardar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
