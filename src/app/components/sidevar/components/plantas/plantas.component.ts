@@ -1,121 +1,214 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ModalEditarUnidadComponent } from '../../../../shared/modal-editar-unidad/modal-editar-unidad.component';
-import { ProyectosService , Planta } from '../../../../services/proyectos.service';
+import { ProyectosService, Planta } from '../../../../services/proyectos.service';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 
+interface Unit {
+  id: number;
+  number: null | string;
+  completed: boolean;
+  polygon: number[][];
+  angle: number;
+  width: number;
+  height: number;
+  centerX: number;
+  centerY: number;
+  debugImageUrl: string;
+  plant: any;
+}
+
+interface ExtendedPlanta extends Planta {
+  boxedImageUrl?: string;
+  units?: Unit[];
+}
+
 @Component({
   selector: 'app-plantas',
   standalone: true,
-  imports: [CommonModule, ModalEditarUnidadComponent, ReactiveFormsModule], // Importar ReactiveFormsModule
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './plantas.component.html',
-  styleUrl: './plantas.component.scss'
+  styleUrls: ['./plantas.component.scss']
 })
 export class PlantasComponent implements OnInit {
   imagenPrevisualizada: string | ArrayBuffer | null = null;
   fileSeleccionado: File | null = null;
   plantaForm!: FormGroup;
-  plantas: Planta[] = []; // Array para almacenar las plantas obtenidas
+  plantas: ExtendedPlanta[] = [];
+  dragOver: boolean = false;
+  showModal: boolean = false;
+  selectedPlanta: ExtendedPlanta | null = null;
+  imageWidth: number = 0;
+  imageHeight: number = 0;
+  isUploading: boolean = false;
 
-  // Inyectamos el servicio de proyectos y el FormBuilder
-  constructor(private fb: FormBuilder, private proyectosService: ProyectosService) {}
+  constructor(
+    private fb: FormBuilder, 
+    private proyectosService: ProyectosService
+  ) {}
 
   ngOnInit(): void {
-    // Inicializamos el formulario con los campos que espera el backend
     this.plantaForm = this.fb.group({
       name: ['', Validators.required],
-      level: ['', [Validators.required, Validators.min(0)]],
-      projectId: ['', [Validators.required, Validators.min(1)]],
-      floorPlan: [null] // Campo para el archivo
+      level: [1, [Validators.required, Validators.min(0)]],
+      projectId: [1, [Validators.required, Validators.min(1)]],
+      floorPlan: [null]
     });
 
-    // Ejemplo de cómo obtener las plantas al inicializar el componente
-    // Reemplaza '1' con el ID de proyecto real.
-    this.obtenerPlantasPorProyecto(1); 
+    // Cargar plantas al inicializar el componente
+    this.cargarTodasLasPlantas();
   }
 
-  onFileSelected(event: Event) {
+  onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
-      this.fileSeleccionado = input.files[0];
-      const reader = new FileReader();
-
-      reader.onload = () => {
-        this.imagenPrevisualizada = reader.result;
-      };
-
-      reader.readAsDataURL(this.fileSeleccionado);
+      this.processFile(input.files[0]);
     }
   }
 
-  /**
-   * Método para crear una nueva planta.
-   * Envía los datos del formulario y el archivo al servicio.
-   */
+  onDragOver(event: DragEvent): void {
+    event.preventDefault();
+    this.dragOver = true;
+  }
+
+  onDragLeave(event: DragEvent): void {
+    event.preventDefault();
+    this.dragOver = false;
+  }
+
+  onDrop(event: DragEvent): void {
+    event.preventDefault();
+    this.dragOver = false;
+    if (event.dataTransfer?.files && event.dataTransfer.files[0]) {
+      this.processFile(event.dataTransfer.files[0]);
+    }
+  }
+
+  private processFile(file: File): void {
+    this.fileSeleccionado = file;
+    const reader = new FileReader();
+    reader.onload = () => this.imagenPrevisualizada = reader.result;
+    reader.readAsDataURL(this.fileSeleccionado);
+  }
+
+  cancelarSubida(): void {
+    this.imagenPrevisualizada = null;
+    this.fileSeleccionado = null;
+    this.plantaForm.patchValue({ floorPlan: null });
+  }
+
   crearPlanta(): void {
-    if (this.plantaForm.invalid) {
+    if (this.plantaForm.invalid || !this.fileSeleccionado) {
       this.plantaForm.markAllAsTouched();
       return;
     }
 
-    // Creamos un objeto FormData para enviar los datos y el archivo
+    this.isUploading = true;
+
     const formData = new FormData();
     formData.append('name', this.plantaForm.get('name')?.value);
-    formData.append('level', this.plantaForm.get('level')?.value);
-    formData.append('projectId', this.plantaForm.get('projectId')?.value);
-
-    // Agregamos el archivo si existe
-    if (this.fileSeleccionado) {
-      formData.append('floorPlan', this.fileSeleccionado, this.fileSeleccionado.name);
-    }
+    formData.append('level', this.plantaForm.get('level')?.value.toString());
+    formData.append('projectId', this.plantaForm.get('projectId')?.value.toString());
+    formData.append('floorPlan', this.fileSeleccionado, this.fileSeleccionado.name);
 
     this.proyectosService.crearPlanta(formData).pipe(
-      tap(plantaCreada => {
-        console.log('Planta creada con éxito:', plantaCreada);
-        this.plantaForm.reset(); // Limpia el formulario
+      tap((plantaCreada: ExtendedPlanta) => {
+        this.isUploading = false;
+        alert(`✅ Planta "${plantaCreada.name}" creada con éxito`);
+        
+        // Limpiar formulario
+        this.plantaForm.reset({ projectId: plantaCreada.projectId, level: 1 });
         this.imagenPrevisualizada = null;
         this.fileSeleccionado = null;
-        // Opcionalmente, recargar la lista de plantas
-        this.obtenerPlantasPorProyecto(plantaCreada.projectId);
+        
+        // Recargar todas las plantas para mostrar la nueva
+        this.cargarTodasLasPlantas();
       }),
       catchError(error => {
-        console.error('Error al crear la planta:', error);
-        // Manejo de errores
+        this.isUploading = false;
+        alert('❌ Error al crear la planta. Intenta nuevamente.');
+        console.error(error);
         return of(null);
       })
     ).subscribe();
   }
 
-  /**
-   * Método para obtener las plantas de un proyecto.
-   */
-  obtenerPlantasPorProyecto(projectId: number): void {
-    this.proyectosService.obtenerPlantasPorProyecto(projectId).pipe(
+  // Método para cargar todas las plantas (cambiar según tu endpoint)
+  cargarTodasLasPlantas(): void {
+    // Si tienes un endpoint que traiga todas las plantas, úsalo aquí
+    // Por ejemplo: this.proyectosService.obtenerTodasLasPlantas()
+    
+    // Por ahora, usando el método existente con projectId = 1
+    this.proyectosService.obtenerPlantasPorProyecto(1).pipe(
       tap(plantas => {
-        this.plantas = plantas;
-        console.log('Plantas obtenidas:', this.plantas);
+        this.plantas = plantas as ExtendedPlanta[];
+        console.log('Plantas cargadas:', this.plantas);
       }),
       catchError(error => {
-        console.error('Error al obtener las plantas:', error);
+        console.error('Error al obtener plantas:', error);
+        this.plantas = [];
         return of([]);
       })
     ).subscribe();
   }
 
-  /**
-   * Método para detectar unidades en un plano.
-   */
   detectarUnidadesEnPlano(plantaId: number): void {
     this.proyectosService.detectarUnidadesEnPlano(plantaId).pipe(
       tap(response => {
-        console.log('Detección de unidades exitosa:', response);
+        console.log('Unidades detectadas:', response);
+        alert('✅ Unidades detectadas con éxito');
+        const planta = this.plantas.find(p => p.id === plantaId);
+        if (planta) {
+          planta.units = response.units;
+          planta.boxedImageUrl = response.image_with_boxes;
+        }
       }),
       catchError(error => {
-        console.error('Error al detectar unidades:', error);
+        console.error('Error en detección de unidades:', error);
+        alert('❌ Error al detectar unidades');
         return of(null);
       })
     ).subscribe();
   }
+
+  openModal(planta: ExtendedPlanta): void {
+    if (planta.units && planta.units.length > 0) {
+      this.selectedPlanta = planta;
+      const img = new Image();
+      img.src = planta.floorPlanUrl;
+      img.onload = () => {
+        this.imageWidth = img.width;
+        this.imageHeight = img.height;
+        this.showModal = true;
+      };
+    } else {
+      alert('No hay unidades detectadas para esta planta.');
+    }
+  }
+
+  closeModal(): void {
+    this.showModal = false;
+    this.selectedPlanta = null;
+    this.imageWidth = 0;
+    this.imageHeight = 0;
+  }
+
+  getPoints(polygon: number[][]): string {
+    return polygon.map(point => point.join(',')).join(' ');
+  }
+
+  // Método para eliminar planta (opcional)
+  eliminarPlanta(plantaId: number): void {
+    if (confirm('¿Estás seguro de que quieres eliminar esta planta?')) {
+      // Aquí llamarías al servicio para eliminar
+      // this.proyectosService.eliminarPlanta(plantaId)
+      console.log('Eliminar planta:', plantaId);
+    }
+  }
+
+  trackByPlantaId(index: number, planta: ExtendedPlanta): number {
+  return planta.id;
 }
+}
+

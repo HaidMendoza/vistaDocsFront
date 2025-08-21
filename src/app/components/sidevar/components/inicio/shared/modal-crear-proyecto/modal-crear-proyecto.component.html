@@ -2,15 +2,16 @@
   <div class="modal-content">
     <h2>Crear Proyecto</h2>
 
-    <form [formGroup]="proyectoForm" (ngSubmit)="guardarProyecto()">
-      <section class="form-group">
-        <label for="imageUrl">Imagen del Proyecto</label>
+    <div class="modal-body">
+      <!-- Columna izquierda: upload -->
+      <section class="upload-box">
+       
         <input 
           id="imageUrl" 
           type="file" 
           (change)="onFileSelected($event)" 
-          accept="image/*" 
-          required
+          accept="image/*"
+          formControlName="imageUrl"
         >
         <span class="file-name" *ngIf="proyectoForm.get('imageUrl')?.value">
           {{ proyectoForm.get('imageUrl')?.value }}
@@ -20,34 +21,37 @@
         </div>
       </section>
 
-      <section class="form-group">
-        <label for="name">Nombre</label>
-        <input id="name" type="text" formControlName="name">
-        <div *ngIf="proyectoForm.get('name')?.invalid && proyectoForm.get('name')?.touched" class="error-message">
-          El nombre es obligatorio.
-        </div>
-      </section>
+      <!-- Columna derecha: formulario -->
+      <form [formGroup]="proyectoForm" (ngSubmit)="guardarProyecto()">
+        <section class="form-group">
+          <label for="name">Nombre</label>
+          <input id="name" type="text" formControlName="name">
+          <div *ngIf="proyectoForm.get('name')?.invalid && proyectoForm.get('name')?.touched" class="error-message">
+            El nombre es obligatorio.
+          </div>
+        </section>
 
-      <section class="form-group">
-        <label for="address">Dirección</label>
-        <input id="address" type="text" formControlName="address">
-        <div *ngIf="proyectoForm.get('address')?.invalid && proyectoForm.get('address')?.touched" class="error-message">
-          La dirección es obligatoria.
-        </div>
-      </section>
+        <section class="form-group">
+          <label for="address">Dirección</label>
+          <input id="address" type="text" formControlName="address">
+          <div *ngIf="proyectoForm.get('address')?.invalid && proyectoForm.get('address')?.touched" class="error-message">
+            La dirección es obligatoria.
+          </div>
+        </section>
 
-      <section class="form-group">
-        <label for="description">Descripción</label>
-        <textarea id="description" formControlName="description"></textarea>
-        <div *ngIf="proyectoForm.get('description')?.invalid && proyectoForm.get('description')?.touched" class="error-message">
-          La descripción es obligatoria.
-        </div>
-      </section>
+        <section class="form-group">
+          <label for="description">Descripción</label>
+          <textarea id="description" formControlName="description"></textarea>
+          <div *ngIf="proyectoForm.get('description')?.invalid && proyectoForm.get('description')?.touched" class="error-message">
+            La descripción es obligatoria.
+          </div>
+        </section>
 
-      <div class="form-actions">
-        <button type="submit" [disabled]="proyectoForm.invalid">Guardar</button>
-        <button type="button" (click)="cerrarModal()">Cancelar</button>
-      </div>
-    </form>
+        <div class="form-actions">
+          <button type="submit" [disabled]="proyectoForm.invalid">Guardar</button>
+          <button type="button" (click)="cerrarModal()">Cancelar</button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>

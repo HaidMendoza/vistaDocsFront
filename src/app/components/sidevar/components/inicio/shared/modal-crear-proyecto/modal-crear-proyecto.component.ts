@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-modal-crear-proyecto',
   standalone: true,
-  imports: [ReactiveFormsModule,CommonModule],
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './modal-crear-proyecto.component.html',
   styleUrls: ['./modal-crear-proyecto.component.scss']
 })
@@ -40,7 +40,6 @@ export class ModalCrearProyectoComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       this.selectedFile = input.files[0];
-     
       this.proyectoForm.patchValue({ imageUrl: this.selectedFile.name });
     }
   }
@@ -55,16 +54,21 @@ export class ModalCrearProyectoComponent implements OnInit {
     formData.append('name', this.proyectoForm.get('name')?.value);
     formData.append('address', this.proyectoForm.get('address')?.value);
     formData.append('description', this.proyectoForm.get('description')?.value);
-    formData.append('image', this.selectedFile); 
+    formData.append('image', this.selectedFile);
 
     this.proyectoService.crearProyecto(formData).pipe(
       tap(response => {
         console.log('Proyecto creado:', response);
+
+        // ✅ Mostrar mensaje de éxito
+        alert('✅ Proyecto creado con éxito');
+
+        // ✅ Cerrar el modal
         this.cerrarModal();
       }),
       catchError(error => {
         console.error('Error al crear proyecto:', error);
-        
+        alert('❌ Hubo un error al crear el proyecto');
         return throwError(() => new Error('Error al crear proyecto'));
       })
     ).subscribe();

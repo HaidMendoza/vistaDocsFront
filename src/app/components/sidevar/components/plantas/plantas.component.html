@@ -1,110 +1,227 @@
 <div class="plantas-container">
-    <!-- Sección superior que NO se elimina -->
-    <div class="right-section">
-        <h2 class="title">Plantas</h2>
-        <div class="search-container">
-            <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+  <!-- Sección superior que NO se elimina -->
+  <div class="right-section">
+    <h2 class="title">Plantas</h2>
+    <div class="search-container">
+      <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <input type="text" placeholder="Buscar plantas o unidades" class="search-input">
+    </div>
+
+    <div class="header-icons">
+      <button class="icon-btn settings-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+          stroke="currentColor" class="size-6">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 0 1 1.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.559.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.894.149c-.424.07-.764.383-.929.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 0 1-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.398.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 0 1-.12-1.45l.527-.737c.25-.35.272-.806.108-1.204-.165-.397-.506-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.108-1.204l-.526-.738a1.125 1.125 0 0 1 .12-1.45l.773-.773a1.125 1.125 0 0 1 1.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894Z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+        </svg>
+      </button>
+
+      <button class="icon-btn notification-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+        </svg>
+        <span class="notification-badge"></span>
+      </button>
+
+      <div class="profile-container">
+        <img src="" alt="Profile" class="profile-image">
+      </div>
+    </div>
+  </div>
+
+  <!-- Subtítulo -->
+  <p class="subtitle">Gestiona las plantas de tu proyecto de manera eficiente.</p>
+
+  <!-- Botones de navegación de plantas (si aplica) -->
+  <div class="buttons-container">
+    <button class="btn planta-inferior">Planta Inferior</button>
+    <button class="btn planta-superior">Planta Superior</button>
+  </div>
+
+  <!-- SECCIÓN DE SUBIDA DE PLANTAS -->
+  <div class="upload-section">
+    <h3 class="section-title">Subir Nueva Planta</h3>
+    
+    <!-- Formulario compacto como en la imagen -->
+    <form [formGroup]="plantaForm" (ngSubmit)="crearPlanta()" class="compact-upload-form">
+      
+      <!-- Campos horizontales compactos -->
+      <div class="compact-fields">
+        <div class="field-inline">
+          <label class="field-label">Nombre de la Planta</label>
+          <input 
+            type="text" 
+            formControlName="name" 
+            class="compact-input" 
+            placeholder="Ej: Planta Baja, Primer Piso..."
+            [class.error]="plantaForm.get('name')?.invalid && plantaForm.get('name')?.touched">
+        </div>
+
+        <div class="field-inline">
+          <label class="field-label">Nivel</label>
+          <input 
+            type="number" 
+            formControlName="level" 
+            class="compact-input level-input" 
+            min="0"
+            [class.error]="plantaForm.get('level')?.invalid && plantaForm.get('level')?.touched">
+        </div>
+      </div>
+
+      <!-- Área de drag & drop grande -->
+      <div class="main-upload-area" 
+           (dragover)="onDragOver($event)" 
+           (drop)="onDrop($event)" 
+           (dragleave)="onDragLeave($event)">
+        
+        <div *ngIf="!imagenPrevisualizada" class="drop-zone" [class.drag-over]="dragOver">
+          <div class="upload-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="#4F46E5" viewBox="0 0 24 24">
+              <path d="M2 22h20M4 22V10h4v12M10 22V4h8v18M2 10h20M14 4V2h4v2" />
             </svg>
-            <input type="text" placeholder="Search for something" class="search-input">
+          </div>
+          <h4 class="drop-title">Sube el plano de la planta</h4>
+          <p class="drop-description">
+            Arrastra y suelta el archivo aquí o haz clic para seleccionar.
+          </p>
+          <p class="format-info">Formatos aceptados: PNG, JPG, PDF</p>
+          
+          <input type="file" id="fileInput" (change)="onFileSelected($event)" accept="image/*,.pdf" hidden>
+          <label for="fileInput" class="upload-button">
+            <span *ngIf="!isUploading">Seleccionar Archivo ⬆</span>
+            <span *ngIf="isUploading">Subiendo... ⏳</span>
+          </label>
         </div>
 
-        <div class="header-icons">
-            <button class="icon-btn">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="size-6">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 0 1 1.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.559.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.894.149c-.424.07-.764.383-.929.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 0 1-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.398.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 0 1-.12-1.45l.527-.737c.25-.35.272-.806.108-1.204-.165-.397-.506-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.108-1.204l-.526-.738a1.125 1.125 0 0 1 .12-1.45l.773-.773a1.125 1.125 0 0 1 1.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894Z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                </svg>
+        <!-- Vista previa centrada -->
+        <div *ngIf="imagenPrevisualizada" class="preview-section">
+          <img [src]="imagenPrevisualizada" alt="Plano" class="main-preview-image">
+          <div class="preview-buttons">
+            <button type="button" class="cancel-button" (click)="cancelarSubida()" [disabled]="isUploading">
+              Cancelar
             </button>
-
-            <button class="icon-btn notification-btn">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-                </svg>
-                <span class="notification-badge"></span>
+            <button type="submit" class="save-button" [disabled]="isUploading || plantaForm.invalid">
+              <span *ngIf="!isUploading">Guardar Planta</span>
+              <span *ngIf="isUploading">Guardando...</span>
             </button>
-
-            <div class="profile-container">
-                <img
-                    src=""
-                    alt="Profile" class="profile-image">
-            </div>
+          </div>
         </div>
-    </div>
+      </div>
 
-    <!-- Nombre hotel y planta -->
-    <p class="subtitle">Wildstone Infra Hotel - Planta 1</p>
-
-    <!-- Botones de planta -->
-    <div class="buttons-container">
-        <button class="btn planta-inferior">Planta Inferior ▼</button>
-        <button class="btn planta-superior">Planta Superior ▲</button>
-    </div>
-
-    <!-- Caja central con el formulario integrado -->
-    <form [formGroup]="plantaForm" (ngSubmit)="crearPlanta()" class="upload-box">
-        <!-- Campos de entrada para crear una planta -->
-        <div class="form-fields">
-            <div class="form-group">
-                <label for="name">Nombre de la Planta</label>
-                <input id="name" type="text" formControlName="name" placeholder="Ej: Planta Baja">
-                <div *ngIf="plantaForm.get('name')?.invalid && plantaForm.get('name')?.touched" class="error-message">
-                    El nombre es obligatorio.
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="level">Nivel</label>
-                <input id="level" type="number" formControlName="level" placeholder="Ej: 1">
-                <div *ngIf="plantaForm.get('level')?.invalid && plantaForm.get('level')?.touched" class="error-message">
-                    El nivel debe ser un número válido.
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="projectId">ID del Proyecto</label>
-                <input id="projectId" type="number" formControlName="projectId" placeholder="Ej: 123">
-                <div *ngIf="plantaForm.get('projectId')?.invalid && plantaForm.get('projectId')?.touched" class="error-message">
-                    El ID del proyecto es obligatorio y debe ser un número.
-                </div>
-            </div>
-        </div>
-
-        <div *ngIf="!imagenPrevisualizada" class="upload-area">
-            <div class="icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="70" height="70" fill="none" stroke="#4F46E5" stroke-width="2" viewBox="0 0 24 24">
-                    <path d="M2 22h20M4 22V10h4v12M10 22V4h8v18M2 10h20M14 4V2h4v2" />
-                </svg>
-            </div>
-            <h3 class="upload-title">Aún no se ha cargado el plano de esta planta</h3>
-            <p class="upload-text">
-                Por favor, sube el plano arquitectónico correspondiente para activar la visualización de casillas interactivas.
-                Esto permitirá asignar y gestionar documentos por unidad
-            </p>
-            <input type="file" id="fileInput" (change)="onFileSelected($event)" accept="image/*" hidden>
-            <label for="fileInput" class="btn upload-btn">Subir Plano ⬆</label>
-        </div>
-
-        <!-- Vista previa de la imagen -->
-        <div *ngIf="imagenPrevisualizada" class="preview-container full-preview">
-            <!-- Se agregó el manejador de errores 'onerror' para evitar que se muestre el icono de imagen rota si la URL no es válida.
-                 Esto es un parche, el problema real está en el archivo .ts donde se asigna el valor a `imagenPrevisualizada`.
-                 Debes asegurarte de que `imagenPrevisualizada` sea una URL válida o un string Base64. -->
-            <img [src]="imagenPrevisualizada" alt="Plano" class="preview-image" onerror="this.style.display='none'">
-            <button type="button" class="btn upload-btn" (click)="detectarUnidadesEnPlano(plantaForm.get('projectId')?.value)">Detectar Unidades</button>
-        </div>
-
-        <!-- Botón de envío que crea la planta -->
-        <button type="submit" class="btn submit-btn" [disabled]="plantaForm.invalid">
-            Crear Planta
-        </button>
+      <!-- Mensajes de error -->
+      <div class="form-errors" *ngIf="plantaForm.get('name')?.invalid && plantaForm.get('name')?.touched">
+        <small class="error-text">El nombre es requerido</small>
+      </div>
+      <div class="form-errors" *ngIf="plantaForm.get('level')?.invalid && plantaForm.get('level')?.touched">
+        <small class="error-text">El nivel debe ser mayor a 0</small>
+      </div>
     </form>
-</div>
+  </div>
 
-@if (false) {
-    <app-modal-editar-unidad></app-modal-editar-unidad>
-}
+  <!-- LISTA DE PLANTAS EXISTENTES (ESTILO SIMPLIFICADO) -->
+  <div class="plantas-list-section" *ngIf="plantas.length > 0">
+    <h3 class="section-title">Plantas Existentes ({{plantas.length}})</h3>
+    
+    <div class="simple-plantas-list">
+      <div class="planta-item" *ngFor="let planta of plantas; trackBy: trackByPlantaId">
+        <div class="planta-thumbnail">
+          <img 
+            [src]="planta.boxedImageUrl || planta.floorPlanUrl" 
+            [alt]="'Plano de ' + planta.name" 
+            class="thumbnail-image" 
+            (click)="openModal(planta)"
+            loading="lazy">
+        </div>
+        
+        <div class="planta-details">
+          <h4 class="planta-title">{{planta.name}}</h4>
+          <p class="planta-subtitle">Nivel: {{planta.level}}</p>
+          <p class="planta-units-count" *ngIf="planta.units && planta.units.length > 0">
+            {{planta.units.length}} unidades detectadas
+          </p>
+        </div>
+        
+        <div class="planta-actions-simple">
+          <button 
+            class="action-btn detect-units-btn" 
+            (click)="detectarUnidadesEnPlano(planta.id)"
+            [disabled]="isUploading"
+            title="Detectar unidades">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 11H1v6a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-6"></path>
+              <path d="M9 7V1a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v6"></path>
+              <path d="M9 17v-5"></path>
+              <path d="M15 17v-5"></path>
+            </svg>
+          </button>
+          
+          <button 
+            class="action-btn view-btn" 
+            (click)="openModal(planta)"
+            title="Ver plano">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="m9 18 6-6-6-6"/>
+            </svg>
+          </button>
+          
+          <button 
+            class="action-btn delete-btn-simple" 
+            (click)="eliminarPlanta(planta.id)"
+            [disabled]="isUploading"
+            title="Eliminar planta">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3,6 5,6 21,6"></polyline>
+              <path d="m19,6v14a2,2 0 0,1 -2,2H7a2,2 0 0,1 -2,-2V6m3,0V4a2,2 0 0,1 2,-2h4a2,2 0 0,1 2,2v2"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mensaje cuando no hay plantas -->
+  <div class="empty-state" *ngIf="plantas.length === 0">
+    <div class="empty-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="none" stroke="#9CA3AF" stroke-width="1.5" viewBox="0 0 24 24">
+        <path d="M2 22h20M4 22V10h4v12M10 22V4h8v18M2 10h20M14 4V2h4v2" />
+      </svg>
+    </div>
+    <h3>No hay plantas disponibles</h3>
+    <p>Sube tu primera planta para comenzar</p>
+  </div>
+
+  <!-- Modal para visualizar el plano con coordenadas -->
+  <div class="modal" *ngIf="showModal" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>{{selectedPlanta?.name}}</h3>
+        <button class="close-btn" (click)="closeModal()">×</button>
+      </div>
+      <div class="modal-image-container">
+        <svg [attr.width]="imageWidth" [attr.height]="imageHeight">
+          <image 
+            [attr.href]="selectedPlanta?.floorPlanUrl" 
+            x="0" y="0" 
+            [attr.width]="imageWidth" 
+            [attr.height]="imageHeight">
+          </image>
+          <polygon 
+            *ngFor="let unit of selectedPlanta?.units" 
+            [attr.points]="getPoints(unit.polygon)" 
+            fill="none" 
+            stroke="red" 
+            stroke-width="2"
+            class="unit-polygon">
+          </polygon>
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>

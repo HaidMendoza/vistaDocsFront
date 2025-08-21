@@ -1,4 +1,3 @@
-// Variables para colores y tipografía (opcional, pero útil en SCSS)
 $font-stack: 'Inter', sans-serif;
 $primary-color: #2563eb;
 $primary-hover-color: #1d4ed8;
@@ -8,107 +7,184 @@ $text-color: #1e293b;
 $secondary-text-color: #64748b;
 $border-color: #e2e8f0;
 $input-background: #f8fafc;
+$error-color: #dc2626;
 
 :host {
-  display: block; // Envuelve el contenido en el componente
+  display: block;
+  font-family: $font-stack;
 }
 
 .login-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: $background-color;
+
+  .left-panel {
+    flex: 1;
+    display: none;
+    position: relative;
+
+    @media (min-width: 768px) {
+      display: block;
+    }
+
+    .building-image {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .right-panel {
+    flex: 1;
     display: flex;
-    min-height: 100vh;
-    background-color: $background-color;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 3rem;
+    background-color: $panel-background;
+    box-shadow: -5px 0 25px rgba(0, 0, 0, 0.08);
+
+    .logo {
+      margin-bottom: 1.5rem;
+
+      img {
+        height: 50px;
+      }
+    }
+
+    .welcome-text {
+      text-align: center;
+      margin-bottom: 2rem;
+
+      h2 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: $text-color;
+        margin-bottom: 0.5rem;
+      }
+
+      p {
+        font-size: 1rem;
+        color: $secondary-text-color;
+      }
+    }
+
+    form {
+      width: 100%;
+      max-width: 700px;
+      margin: auto;
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.25rem;
+
+        .form-group {
+          display: flex;
+          flex-direction: column;
+
+          label {
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: $text-color;
+          }
+
+          input,
+          select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid $border-color;
+            background-color: $input-background;
+            font-size: 0.95rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+
+            &:focus {
+              border-color: $primary-color;
+              box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+              outline: none;
+            }
+          }
+
+          .error-message {
+            margin-top: 0.25rem;
+            font-size: 0.8rem;
+            color: $error-color;
+          }
+        }
+
+        .full-width {
+          grid-column: span 2;
+        }
+      }
+
+      .login-button {
+        width: 100%;
+        padding: 0.9rem;
+        margin-top: 1.5rem;
+        background-color: $primary-color;
+        color: #fff;
+        font-size: 1rem;
+        font-weight: 600;
+        border: none;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
+
+        &:hover {
+          background-color: $primary-hover-color;
+          transform: translateY(-2px);
+        }
+
+        &:disabled {
+          background-color: #93c5fd;
+          cursor: not-allowed;
+        }
+      }
+    }
+
+    .link-text {
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+      color: $secondary-text-color;
+      text-align: center;
+
+      a {
+        color: $primary-color;
+        font-weight: 600;
+        text-decoration: none;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}
+
+/* 📱 Responsive */
+@media (max-width: 767px) {
+  .login-container {
+    flex-direction: column;
 
     .left-panel {
-        flex: 1;
-        display: none; // Oculto en móviles
-        position: relative;
-
-        @media (min-width: 768px) {
-            display: block;
-        }
-
-        .building-image {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+      display: none;
     }
 
     .right-panel {
-        flex: 1;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 2rem;
-        flex-direction: column;
-        background-color: $panel-background;
+      padding: 2rem 1.5rem;
 
-        .logo {
-            margin-bottom: 2rem;
+      form {
+        max-width: 100%;
 
-            img {
-                height: 50px;
-            }
+        .form-grid {
+          grid-template-columns: 1fr; // en móviles solo 1 columna
         }
-
-        .welcome-text {
-            text-align: center;
-            margin-bottom: 2rem;
-
-            h2 {
-                font-size: 2.5rem;
-                font-weight: bold;
-                color: $text-color;
-            }
-
-            p {
-                color: $secondary-text-color;
-            }
-        }
-
-        form {
-            width: 100%;
-            max-width: 380px;
-
-            .form-group {
-                margin-bottom: 1.5rem;
-
-                input, select {
-                    width: 100%;
-                    padding: 0.75rem 1rem;
-                    border-radius: 0.5rem;
-                    border: 1px solid $border-color;
-                    background-color: $input-background;
-                }
-            }
-
-            .login-button {
-                width: 100%;
-                padding: 1rem;
-                background-color: $primary-color;
-                color: white;
-                font-weight: bold;
-                border-radius: 0.5rem;
-                transition: background-color 0.3s;
-
-                &:hover {
-                    background-color: $primary-hover-color;
-                }
-            }
-        }
-
-        .link-text {
-            margin-top: 1.5rem;
-            text-align: center;
-            color: $secondary-text-color;
-
-            a {
-                color: $primary-color;
-                font-weight: bold;
-            }
-        }
+      }
     }
+  }
 }
