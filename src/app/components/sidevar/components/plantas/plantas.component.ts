@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProyectosService, Planta } from '../../../../services/proyectos.service';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, finalize, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { UnitService } from '../../../../services/unit.service';
 
 interface Unit {
   id: number;
@@ -41,14 +42,18 @@ export class PlantasComponent implements OnInit {
   imageHeight: number = 0;
   isUploading: boolean = false;
   isDetecting: boolean = false;
-  
+  unitForm!: FormGroup;
+  selectedFiles: File[] = [];
+  modoConsulta: boolean = true;
   // Propiedades para el modal
   unidadSeleccionada: number | null = null;
   modalAbierto: boolean = false;
+  documentos: any[] = [];
 
   constructor(
     private fb: FormBuilder, 
-    private proyectosService: ProyectosService
+    private proyectosService: ProyectosService,
+     private unitService: UnitService
   ) {}
 
   ngOnInit(): void {
@@ -57,6 +62,12 @@ export class PlantasComponent implements OnInit {
       level: [1, [Validators.required, Validators.min(0)]],
       projectId: [1, [Validators.required, Validators.min(1)]],
       floorPlan: [null]
+    });
+    this.unitForm = this.fb.group({
+      number: ['', Validators.required],
+      completed: [false, Validators.required],
+      plant: ['', Validators.required],
+      documentName: ['', Validators.required],
     });
   }
 
@@ -115,6 +126,7 @@ export class PlantasComponent implements OnInit {
     this.proyectosService.crearPlanta(formData).pipe(
       tap((plantaCreada: ExtendedPlanta) => {
         this.isUploading = false;
+        console.log('planta',formData.values)
         alert(`✅ Planta "${plantaCreada.name}" creada con éxito`);
         
         this.plantaActual = plantaCreada;
@@ -187,22 +199,25 @@ export class PlantasComponent implements OnInit {
 
   // Métodos para el modal
   abrirModalUnidad(unitId: number): void {
-    console.log('Abriendo modal para unidad:', unitId);
-    this.unidadSeleccionada = unitId;
-    this.modalAbierto = true;
-    
-    // Opcional: prevenir scroll del body cuando el modal está abierto
-    document.body.style.overflow = 'hidden';
+  console.log('Abriendo modal para unidad:', unitId);
+  this.unidadSeleccionada = unitId;
+  this.modalAbierto = true;
+  this.modoConsulta = true;  
+  this.cargarDocumentos(); 
+  document.body.style.overflow = 'hidden';
   }
 
-  cerrarModal(): void {
-    console.log('Cerrando modal');
-    this.unidadSeleccionada = null;
-    this.modalAbierto = false;
-    
-    // Restaurar scroll del body
-    document.body.style.overflow = 'auto';
-  }
+cerrarModal(): void {
+  console.log('Cerrando modal');
+  this.unidadSeleccionada = null;
+  this.documentos = [];       
+  this.unitForm.reset();       
+  this.modoConsulta = false;   
+  this.modalAbierto = false;
+  
+  document.body.style.overflow = 'auto';
+}
+
 
   // Método para obtener información completa de la unidad seleccionada
   obtenerUnidadCompleta(): Unit | null {
@@ -228,5 +243,82 @@ export class PlantasComponent implements OnInit {
     }
   }
 
-  
+   fileUnit(event: any) {
+      this.selectedFiles = Array.from(event.target.files);
+  }
+
+onSubmitUnit() {
+  const unitPayload = {
+    number: this.unitForm.value?.number,
+    completed: true,
+    plant: { id: this.plantaActual?.id }
+  };
+
+  this.unitService.createUnit(unitPayload).subscribe({
+    next: (unitResponse) => {
+      const unitId = unitResponse.id;
+
+      if (this.selectedFiles.length > 0) {
+        this.unitService.uploadMultipleDocuments(this.selectedFiles,  this.unidadSeleccionada!)
+          .pipe(finalize(() => this.cerrarModal()))
+          .subscribe({
+            next: () => {
+              this.mostrarExito('Unidad y documentos guardados con éxito');
+            },
+            error: () => {
+              this.mostrarError('Error al subir documentos');
+            }
+          });
+      } else {
+        this.mostrarExito('Unidad creada con éxito');
+        this.cerrarModal();
+      }
+    },
+    error: () => this.mostrarError('Error al crear la unidad')
+  });
+}
+
+activarEdicion() {
+  this.modoConsulta = false;
+  this.unitForm.enable();
+}
+
+
+mostrarExito(msg: string) {
+  alert(msg);
+}
+
+mostrarError(msg: string) {
+  alert(msg);
+}
+
+abrirModalConsulta(unidad: any) {
+  this.modoConsulta = true;
+  this.modalAbierto = true;
+  this.unitForm.patchValue(unidad);
+  this.unitForm.disable(); 
+  this.unidadSeleccionada = unidad.id; 
+  this.cargarDocumentos();
+}
+
+abrirModalEdicion(unidad: any) {
+  this.modoConsulta = false;
+  this.modalAbierto = true;
+  this.unitForm.patchValue(unidad);
+  this.unitForm.enable(); 
+  this.unidadSeleccionada = unidad.id; 
+  this.cargarDocumentos();
+}
+cargarDocumentos() {
+   console.log('Unidad seleccionada:', this.unidadSeleccionada);
+  this.unitService.listarPorUnidad(this.unidadSeleccionada).subscribe({
+    next: (data) => {
+      this.documentos = data;
+    },
+    error: (err) => {
+      console.error('Error cargando documentos', err);
+    }
+  });
+}
+
 }

@@ -561,3 +561,109 @@
 .btn.primary:hover {
   background-color: #4338ca;
 }
+
+
+.content-modal-unit {
+  width: 100%;
+  height: max-content;
+
+  .upload-box {
+  border: 2px dashed #4a90e2;
+  border-radius: 10px;
+  padding: 1.5rem;
+  text-align: center;
+  color: #777;
+  font-size: 0.9rem;
+  cursor: pointer;
+  background: #fafafa;
+  margin-top: 31px;
+
+  input[type="file"] {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+  }
+
+  .file-name {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    color: #333;
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+
+  label {
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+    font-weight: 500;
+  }
+
+  input,
+  textarea {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.85rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+
+    &:focus {
+      outline: none;
+      border-color: #4a90e2;
+      box-shadow: 0 0 0 2px rgba(74,144,226,0.2);
+    }
+  }
+}
+
+}
+
+
+.documentacion {
+  margin: 1rem 0;
+}
+
+.titulo {
+  font-size: 14px;
+  color: #0073e6;
+  margin-bottom: 0.5rem;
+}
+
+.doc-card {
+  display: flex;
+  align-items: center;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin-bottom: 6px;
+  background: #fff;
+}
+
+.doc-card .icono {
+  margin-right: 8px;
+  font-size: 18px;
+}
+
+.doc-card a {
+  text-decoration: none;
+  color: #333;
+}
+
+.doc-card a:hover {
+  text-decoration: underline;
+}
+
+.doc-empty {
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  padding: 30px;
+  text-align: center;
+  color: #888;
+  background: #fff;
+}
+
+.doc-empty .icono {
+  display: block;
+  font-size: 24px;
+  margin-bottom: 8px;
+}
